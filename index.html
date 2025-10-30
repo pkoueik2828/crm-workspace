@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CRM Workspace</title>
+
+<!-- ✅ Basic Styling -->
+<style>
+html,body{
+  margin:0;padding:0;width:100%;height:100%;overflow:hidden;
+  font-family:"Segoe UI",Roboto,Arial,sans-serif;background:#fafafa;
+}
+.crm-container{display:flex;height:100vh;}
+.left-rail{
+  width:260px;background:#f8f9fb;border-right:1px solid #ddd;
+  padding:16px;overflow-y:auto;
+}
+.main{
+  flex:1;display:flex;flex-direction:column;background:#fff;overflow:auto;
+}
+.main-header{
+  padding:10px 16px;border-bottom:1px solid #ddd;background:#fff;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.tabs{
+  display:flex;flex-wrap:wrap;border-bottom:1px solid #ddd;background:#f9f9f9;
+}
+.tabs button{
+  padding:8px 12px;border:1px solid #ddd;border-bottom:none;
+  background:#f8f8f8;cursor:pointer;font-size:13px;margin-right:4px;
+  border-radius:4px 4px 0 0;
+}
+.tabs button.active{background:#007bff;color:#fff;border-color:#007bff;}
+.section{display:none;padding:16px;}
+.section.active{display:block;}
+.right-drawer{
+  width:420px;background:#f9fafb;border-left:1px solid #ddd;
+  padding:16px;overflow-y:auto;
+}
+.sub-tabs button{
+  padding:6px 8px;border:1px solid #ccc;border-radius:3px;
+  background:#fff;font-size:12px;cursor:pointer;margin-right:4px;
+}
+.sub-tabs button.active{background:#28a745;color:#fff;border-color:#28a745;}
+.content-block{display:none;}
+.content-block.active{display:block;}
+</style>
+</head>
+
+<body>
+<div class="crm-container">
+
+  <!-- LEFT NAV -->
+  <aside class="left-rail">
+    <h2>Navigation</h2>
+    <div>My Day</div><div>Inbox</div><div>Leads</div>
+    <div>Accounts</div><div>Contacts</div><div>Deals</div>
+    <div>Calendar</div><div>Reports</div>
+
+    <h3>Filters</h3>
+    <button>My Records</button><button>Team</button><button>All</button>
+
+    <h3>Quick Create</h3>
+    <button>+ Lead</button><button>+ Deal</button>
+    <button>+ Task</button><button>+ Note</button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="main-header">
+      <div>🔍 Global Search</div>
+      <div>
+        <button>Convert</button>
+        <button>Log Activity</button>
+        <button>Email</button>
+        <button>Schedule</button>
+      </div>
+    </div>
+
+    <div class="tabs" id="mainTabs">
+      <button data-target="day" class="active">My Day</button>
+      <button data-target="pipeline">Pipeline</button>
+      <button data-target="leads">Leads</button>
+      <button data-target="accounts">Accounts</button>
+      <button data-target="contacts">Contacts</button>
+      <button data-target="calendar">Calendar</button>
+    </div>
+
+    <div class="section active" id="section-day">
+      <h3>My Day — Tasks due today</h3>
+      <div elName="zc-component" viewLinkName="Today_s_Tasks" params="zc_Header=true">Loading View...</div>
+    </div>
+
+    <div class="section" id="section-pipeline">
+      <h3>Pipeline (Kanban)</h3>
+      <div elName="zc-component" viewLinkName="Kanban_Deal_Report" params="zc_Header=true">Loading View...</div>
+    </div>
+
+    <div class="section" id="section-leads">
+      <h3>Leads List</h3>
+      <div elName="zc-component" viewLinkName="Lead_List_by_Owner" params="zc_Header=true">Loading View...</div>
+    </div>
+
+    <div class="section" id="section-accounts">
+      <h3>Accounts</h3>
+      <div elName="zc-component" viewLinkName="My_Accounts" params="zc_Header=true">Loading View...</div>
+    </div>
+
+    <div class="section" id="section-contacts">
+      <h3>Contacts</h3>
+      <div elName="zc-component" viewLinkName="My_Contacts" params="zc_Header=true">Loading View...</div>
+    </div>
+
+    <div class="section" id="section-calendar">
+      <h3>Calendar</h3>
+      <div elName="zc-component" viewLinkName="Subject_Meeting_Title" params="zc_Header=true">Loading View...</div>
+    </div>
+  </main>
+
+  <!-- RIGHT PANEL -->
+  <aside class="right-drawer" id="rightDrawer">
+    <h2>Universal Record View</h2>
+    <div class="meta">Record: [Name]<br>Owner: [User]</div>
+    <div class="sub-tabs" id="drawerTabs">
+      <button data-target="overview" class="active">Overview</button>
+      <button data-target="timeline">Timeline</button>
+      <button data-target="related">Related</button>
+      <button data-target="files">Files</button>
+      <button data-target="automation">Automation</button>
+    </div>
+    <div id="drawer-overview" class="content-block active"><b>Overview:</b> Key fields summary…</div>
+    <div id="drawer-timeline" class="content-block"><b>Timeline:</b> Calls, notes, meetings…</div>
+    <div id="drawer-related" class="content-block"><b>Related:</b> Deals, Contacts…</div>
+    <div id="drawer-files" class="content-block"><b>Files:</b> Attachments area</div>
+    <div id="drawer-automation" class="content-block"><b>Automation:</b> Playbooks & SLAs</div>
+  </aside>
+</div>
+
+<script>
+// Tab switching
+const mainTabs = document.querySelectorAll('#mainTabs button');
+const sections = document.querySelectorAll('.section');
+mainTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    mainTabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    sections.forEach(sec => sec.classList.remove('active'));
+    document.getElementById('section-' + tab.dataset.target).classList.add('active');
+  });
+});
+const drawerTabs = document.querySelectorAll('#drawerTabs button');
+const drawerBlocks = document.querySelectorAll('.right-drawer .content-block');
+drawerTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    drawerTabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    drawerBlocks.forEach(b => b.classList.remove('active'));
+    document.getElementById('drawer-' + tab.dataset.target).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
