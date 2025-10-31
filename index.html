@@ -6,22 +6,12 @@
 <title>CRM Workspace</title>
 <style>
 *{box-sizing:border-box;}
-body{
-  margin:0;
-  font-family:"Segoe UI",Roboto,Arial,sans-serif;
-  background:#fafafa;
-  height:100vh;overflow:hidden;
-}
-.crm-container{
-  display:flex;height:100%;
-}
-/* Left Panel */
-.left-rail{
-  width:260px;background:#f8f9fb;border-right:1px solid #ddd;
-  padding:16px;overflow-y:auto;position:fixed;top:0;left:0;height:100%;
-  transform:translateX(-245px);transition:transform .35s ease;
-  z-index:9999;box-shadow:2px 0 6px rgba(0,0,0,0.1);
-}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:#fafafa;height:100vh;overflow:hidden;}
+.crm-container{display:flex;height:100%;}
+
+/* Left Panel (auto-hide + dock) */
+.left-rail{width:260px;background:#f8f9fb;border-right:1px solid #ddd;padding:16px;overflow-y:auto;position:fixed;top:0;left:0;height:100%;
+  transform:translateX(-245px);transition:transform .35s ease;z-index:5;box-shadow:2px 0 6px rgba(0,0,0,0.1);}
 .left-rail:hover{transform:translateX(0);}
 .left-rail.docked{transform:translateX(0)!important;}
 .left-rail::after{content:'';position:absolute;top:0;right:-15px;width:15px;height:100%;background:transparent;}
@@ -29,22 +19,24 @@ body{
 .section-title{font-weight:600;font-size:14px;margin:20px 0 6px;color:#333;}
 .left-rail button{display:block;width:100%;margin-bottom:6px;border:1px solid #ccc;border-radius:4px;padding:8px;background:#fff;cursor:pointer;font-size:13px;}
 .left-rail button:hover{background:#eef3f8;}
-.pin-btn{position:absolute;top:10px;right:10px;cursor:pointer;font-size:16px;}
-/* Right Drawer */
-.right-drawer{
-  width:420px;background:#f9fafb;border-left:1px solid #ddd;padding:16px;overflow-y:auto;
-  position:fixed;top:0;right:0;height:100%;transform:translateX(405px);transition:transform .35s ease;
-  z-index:9999;box-shadow:-2px 0 6px rgba(0,0,0,0.1);
-}
+.pin-btn{position:absolute;top:10px;right:10px;cursor:pointer;font-size:16px;user-select:none;}
+
+/* Right Drawer (auto-hide + dock) */
+.right-drawer{width:480px;background:#f9fafb;border-left:1px solid #ddd;padding:0;overflow:hidden;position:fixed;top:0;right:0;height:100%;
+  transform:translateX(465px);transition:transform .35s ease;z-index:4;box-shadow:-2px 0 6px rgba(0,0,0,0.1);}
 .right-drawer:hover{transform:translateX(0);}
 .right-drawer.docked{transform:translateX(0)!important;}
-.right-drawer::before{content:'';position:absolute;top:0;left:-15px;width:15px;height:100%;background:transparent;}
-/* Main Area */
+.right-head{display:flex;align-items:center;gap:8px;justify-content:space-between;border-bottom:1px solid #ddd;background:#f9fafb;padding:10px 12px;}
+.right-title{font-size:16px;font-weight:600;margin:0;}
+.right-iframe{width:100%;height:calc(100% - 48px);border:0;}
+/* Main */
 .main{flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden;position:relative;z-index:1;margin-left:15px;margin-right:15px;}
 .main-header{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #ddd;background:#fff;}
 .search{flex:1;color:#777;font-size:14px;}
 .hamburger{display:none;font-size:20px;cursor:pointer;}
 @media(max-width:768px){.hamburger{display:inline-block;}}
+
+/* Tabs */
 .tabset{display:flex;flex-direction:column;height:100%;overflow:hidden;}
 .tabset input[name="main-tab"]{display:none;}
 .tab-bar{display:flex;flex-wrap:wrap;border-bottom:1px solid #ddd;background:#f9f9f9;}
@@ -56,30 +48,30 @@ body{
 #tab4:checked~.tab-bar label[for="tab4"],
 #tab5:checked~.tab-bar label[for="tab5"],
 #tab6:checked~.tab-bar label[for="tab6"]{background:#007bff;color:#fff;border-color:#007bff;}
+
+/* Sections */
 .tab-content{flex:1;position:relative;overflow:hidden;}
-.section{display:block;padding:16px;overflow-y:auto;position:absolute;top:0;left:0;right:0;bottom:0;opacity:0;visibility:hidden;pointer-events:none;}
+.section{display:block;padding:0;position:absolute;top:0;left:0;right:0;bottom:0;opacity:0;visibility:hidden;pointer-events:none;}
 #tab1:checked~.tab-content #content1,
 #tab2:checked~.tab-content #content2,
 #tab3:checked~.tab-content #content3,
 #tab4:checked~.tab-content #content4,
 #tab5:checked~.tab-content #content5,
 #tab6:checked~.tab-content #content6{position:relative;opacity:1;visibility:visible;pointer-events:auto;}
-.section [elname='zc-component'],.section iframe{width:100%!important;height:calc(100vh - 220px);border:none;display:block;}
-/* Drawer Content */
-.right-drawer h2{margin-top:0;font-size:16px;font-weight:600;}
-.meta{font-size:13px;margin-bottom:10px;}
-input[name="drawer-tab"]{display:none;}
-.sub-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;}
-.sub-tabs label{padding:6px 8px;border:1px solid #ccc;border-radius:3px;font-size:12px;background:#fff;cursor:pointer;}
-input[name="drawer-tab"]:checked+label{background:#28a745;color:#fff;border-color:#28a745;}
-.content-block{display:none;font-size:13px;color:#333;margin-bottom:10px;}
-#d1:checked~#drawer-overview,#d2:checked~#drawer-timeline,#d3:checked~#drawer-related,#d4:checked~#drawer-files,#d5:checked~#drawer-automation{display:block;}
+.report-frame{width:100%;height:100%;border:0;}
+/* Mobile behavior */
+@media(max-width:768px){.left-rail{transform:translateX(-260px);}
+.left-rail.docked{transform:translateX(0)}
+.right-drawer{transform:translateX(480px);}
+.right-drawer.docked{transform:translateX(0)}}
 </style>
 </head>
 <body>
 <div class="crm-container">
+
+  <!-- LEFT NAV -->
   <aside class="left-rail" id="leftRail">
-    <span class="pin-btn" id="leftPin">📌</span>
+    <span class="pin-btn" id="leftPin" title="Dock/Undock">📌</span>
     <h2>Navigation</h2>
     <div>My Day</div><div>Inbox</div><div>Leads</div><div>Accounts</div><div>Contacts</div><div>Deals</div><div>Calendar</div><div>Reports</div>
     <div class="section-title">Filters</div>
@@ -87,11 +79,14 @@ input[name="drawer-tab"]:checked+label{background:#28a745;color:#fff;border-colo
     <div class="section-title">Quick Create</div>
     <button>+ Lead</button><button>+ Deal</button><button>+ Task</button><button>+ Note</button>
   </aside>
+
+  <!-- MAIN -->
   <main class="main">
     <div class="main-header">
       <div class="hamburger" id="mobileToggle">☰</div>
       <div class="search">🔍 Global Search…</div>
     </div>
+
     <div class="tabset">
       <input type="radio" id="tab1" name="main-tab" checked>
       <input type="radio" id="tab2" name="main-tab">
@@ -99,56 +94,110 @@ input[name="drawer-tab"]:checked+label{background:#28a745;color:#fff;border-colo
       <input type="radio" id="tab4" name="main-tab">
       <input type="radio" id="tab5" name="main-tab">
       <input type="radio" id="tab6" name="main-tab">
+
       <div class="tab-bar">
-        <label for="tab1">My Day</label><label for="tab2">Pipeline</label><label for="tab3">Leads</label><label for="tab4">Accounts</label><label for="tab5">Contacts</label><label for="tab6">Calendar</label>
+        <label for="tab1">My Day</label>
+        <label for="tab2">Pipeline</label>
+        <label for="tab3">Leads</label>
+        <label for="tab4">Accounts</label>
+        <label for="tab5">Contacts</label>
+        <label for="tab6">Calendar</label>
       </div>
+
       <div class="tab-content">
-        <div id="content1" class="section"><h3>My Day</h3><div elName="zc-component" viewLinkName="Today_s_Tasks" params="zc_Header=true">Loading...</div></div>
-        <div id="content2" class="section"><h3>Pipeline</h3><div elName="zc-component" viewLinkName="Kanban_Deal_Report" params="zc_Header=true">Loading...</div></div>
-        <div id="content3" class="section"><h3>Leads</h3><div elName="zc-component" viewLinkName="Lead_List_by_Owner" params="zc_Header=true">Loading...</div></div>
-        <div id="content4" class="section"><h3>Accounts</h3><div elName="zc-component" viewLinkName="My_Accounts" params="zc_Header=true">Loading...</div></div>
-        <div id="content5" class="section"><h3>Contacts</h3><div elName="zc-component" viewLinkName="My_Contacts" params="zc_Header=true">Loading...</div></div>
-        <div id="content6" class="section"><h3>Calendar</h3><div elName="zc-component" viewLinkName="Subject_Meeting_Title" params="zc_Header=true">Loading...</div></div>
+        <div id="content1" class="section">
+          <iframe class="report-frame" loading="lazy"
+            src="https://creatorapp.zoho.com/peter.koueik_paxtonaccess/paxton-mena-crm-suite/#Report:Today_s_Tasks?zc_Header=true"></iframe>
+        </div>
+
+        <div id="content2" class="section">
+          <iframe class="report-frame" loading="lazy"
+            src="https://creatorapp.zoho.com/peter.koueik_paxtonaccess/paxton-mena-crm-suite/#Report:Kanban_Deal_Report?zc_Header=true"></iframe>
+        </div>
+
+        <div id="content3" class="section">
+          <iframe class="report-frame" loading="lazy"
+            src="https://creatorapp.zoho.com/peter.koueik_paxtonaccess/paxton-mena-crm-suite/#Report:Lead_List_by_Owner?zc_Header=true"></iframe>
+        </div>
+
+        <div id="content4" class="section">
+          <iframe class="report-frame" loading="lazy"
+            src="https://creatorapp.zoho.com/peter.koueik_paxtonaccess/paxton-mena-crm-suite/#Report:My_Accounts?zc_Header=true"></iframe>
+        </div>
+
+        <div id="content5" class="section">
+          <iframe class="report-frame" loading="lazy"
+            src="https://creatorapp.zoho.com/peter.koueik_paxtonaccess/paxton-mena-crm-suite/#Report:My_Contacts?zc_Header=true"></iframe>
+        </div>
+
+        <div id="content6" class="section">
+          <iframe class="report-frame" loading="lazy"
+            src="https://creatorapp.zoho.com/peter.koueik_paxtonaccess/paxton-mena-crm-suite/#Report:Subject_Meeting_Title?zc_Header=true"></iframe>
+        </div>
       </div>
     </div>
   </main>
+
+  <!-- RIGHT DRAWER -->
   <aside class="right-drawer" id="rightDrawer">
-    <span class="pin-btn" id="rightPin">📌</span>
-    <h2>Universal Record View</h2>
-    <div class="meta">Record: [Name]<br>Owner: [User] | Score: [##]</div>
-    <div class="sub-tabs">
-      <input type="radio" id="d1" name="drawer-tab" checked><label for="d1">Overview</label>
-      <input type="radio" id="d2" name="drawer-tab"><label for="d2">Timeline</label>
-      <input type="radio" id="d3" name="drawer-tab"><label for="d3">Related</label>
-      <input type="radio" id="d4" name="drawer-tab"><label for="d4">Files</label>
-      <input type="radio" id="d5" name="drawer-tab"><label for="d5">Automation</label>
+    <div class="right-head">
+      <h3 class="right-title" id="drawerTitle">Universal Record View</h3>
+      <span class="pin-btn" id="rightPin" title="Dock/Undock">📌</span>
     </div>
-    <div id="drawer-overview" class="content-block"><strong>Overview</strong>: Key fields summary…</div>
-    <div id="drawer-timeline" class="content-block"><strong>Timeline</strong>: Activities…</div>
-    <div id="drawer-related" class="content-block"><strong>Related</strong>: Deals, Contacts…</div>
-    <div id="drawer-files" class="content-block"><strong>Files</strong>: Attachments area</div>
-    <div id="drawer-automation" class="content-block"><strong>Automation</strong>: Playbooks</div>
+    <iframe id="drawerFrame" class="right-iframe" loading="lazy" src="about:blank"></iframe>
   </aside>
+
 </div>
+
 <script>
-const leftRail=document.getElementById('leftRail');
-const rightDrawer=document.getElementById('rightDrawer');
-const leftPin=document.getElementById('leftPin');
-const rightPin=document.getElementById('rightPin');
-const mobileToggle=document.getElementById('mobileToggle');
-if(localStorage.getItem('dockLeft')==='true')leftRail.classList.add('docked');
-if(localStorage.getItem('dockRight')==='true')rightDrawer.classList.add('docked');
-leftPin.onclick=()=>{
- leftRail.classList.toggle('docked');
- localStorage.setItem('dockLeft',leftRail.classList.contains('docked'));
-};
-rightPin.onclick=()=>{
- rightDrawer.classList.toggle('docked');
- localStorage.setItem('dockRight',rightDrawer.classList.contains('docked'));
-};
-mobileToggle.onclick=()=>{
- leftRail.classList.toggle('docked');
-};
+const leftRail = document.getElementById('leftRail');
+const rightDrawer = document.getElementById('rightDrawer');
+const leftPin = document.getElementById('leftPin');
+const rightPin = document.getElementById('rightPin');
+const mobileToggle = document.getElementById('mobileToggle');
+const drawerFrame = document.getElementById('drawerFrame');
+const drawerTitle = document.getElementById('drawerTitle');
+
+if(localStorage.getItem('dockLeft')==='true') leftRail.classList.add('docked');
+if(localStorage.getItem('dockRight')==='true') rightDrawer.classList.add('docked');
+
+leftPin.onclick = function(){ leftRail.classList.toggle('docked'); localStorage.setItem('dockLeft', leftRail.classList.contains('docked')); };
+rightPin.onclick = function(){ rightDrawer.classList.toggle('docked'); localStorage.setItem('dockRight', rightDrawer.classList.contains('docked')); };
+mobileToggle.onclick = function(){ leftRail.classList.toggle('docked'); };
+
+// --- Helper: read query params ---
+function getQuery(){ const q={}; const s=location.search.slice(1).split('&'); s.forEach(p=>{if(!p)return;const kv=p.split('='); const k=decodeURIComponent(kv[0]||''); const v=decodeURIComponent(kv[1]||''); q[k]=v;}); return q; }
+
+// Build the Universal Record page URL inside your app
+function buildRecordUrl(module, id) { 
+  if(!module || !id) return 'about:blank';
+  var base = "https://creatorapp.zoho.com/peter.koueik_paxtonaccess/paxton-mena-crm-suite/#Page:Universal_Record";
+  return base + "?module=" + encodeURIComponent(module) + "&recordId=" + encodeURIComponent(id);
+}
+
+// Initialize drawer from URL ?module=&recordId=
+(function initDrawerFromURL(){
+  const q = getQuery();
+  if(q.module && q.recordId){
+    drawerFrame.src = buildRecordUrl(q.module, q.recordId);
+    drawerTitle.textContent = q.module + " • " + q.recordId;
+    rightDrawer.classList.add('docked');
+    setTimeout(function(){ rightDrawer.classList.remove('docked'); }, 50);
+  }
+})();
+
+// Minimal postMessage API to open a record programmatically
+window.addEventListener('message', function(e){
+  try{
+    if(typeof e.data === 'object' && e.data && e.data.type === 'openRecord'){
+      var module = e.data.module;
+      var recordId = e.data.recordId;
+      drawerFrame.src = buildRecordUrl(module, recordId);
+      drawerTitle.textContent = module + " • " + recordId;
+      rightDrawer.classList.add('docked');
+    }
+  }catch(err){}
+});
 </script>
 </body>
 </html>

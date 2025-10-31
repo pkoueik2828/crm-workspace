@@ -1,0 +1,8 @@
+{
+  "name": "CRM Workspace Collapsible (Widget-safe iframes)",
+  "version": "2.0",
+  "description": "Zoho Creator widget that embeds reports via iframes and loads a right drawer Universal Record page by module & recordId.",
+  "widget_type": "custom_widget",
+  "identifier": "crm_workspace_collapsible_v2",
+  "platform_version": "2.0"
+}
