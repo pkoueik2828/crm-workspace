@@ -1,164 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CRM Workspace</title>
-
-<!-- ✅ Basic Styling -->
 <style>
-html,body{
-  margin:0;padding:0;width:100%;height:100%;overflow:hidden;
-  font-family:"Segoe UI",Roboto,Arial,sans-serif;background:#fafafa;
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:"Segoe UI",Roboto,Arial,sans-serif;
+  background:#fafafa;
+  height:100vh;overflow:hidden;
 }
-.crm-container{display:flex;height:100vh;}
+.crm-container{
+  display:flex;height:100%;
+}
+/* Left Panel */
 .left-rail{
   width:260px;background:#f8f9fb;border-right:1px solid #ddd;
-  padding:16px;overflow-y:auto;
+  padding:16px;overflow-y:auto;position:fixed;top:0;left:0;height:100%;
+  transform:translateX(-245px);transition:transform .35s ease;
+  z-index:9999;box-shadow:2px 0 6px rgba(0,0,0,0.1);
 }
-.main{
-  flex:1;display:flex;flex-direction:column;background:#fff;overflow:auto;
-}
-.main-header{
-  padding:10px 16px;border-bottom:1px solid #ddd;background:#fff;
-  display:flex;justify-content:space-between;align-items:center;
-}
-.tabs{
-  display:flex;flex-wrap:wrap;border-bottom:1px solid #ddd;background:#f9f9f9;
-}
-.tabs button{
-  padding:8px 12px;border:1px solid #ddd;border-bottom:none;
-  background:#f8f8f8;cursor:pointer;font-size:13px;margin-right:4px;
-  border-radius:4px 4px 0 0;
-}
-.tabs button.active{background:#007bff;color:#fff;border-color:#007bff;}
-.section{display:none;padding:16px;}
-.section.active{display:block;}
+.left-rail:hover{transform:translateX(0);}
+.left-rail.docked{transform:translateX(0)!important;}
+.left-rail::after{content:'';position:absolute;top:0;right:-15px;width:15px;height:100%;background:transparent;}
+.left-rail h2{font-size:16px;font-weight:600;margin-top:0;}
+.section-title{font-weight:600;font-size:14px;margin:20px 0 6px;color:#333;}
+.left-rail button{display:block;width:100%;margin-bottom:6px;border:1px solid #ccc;border-radius:4px;padding:8px;background:#fff;cursor:pointer;font-size:13px;}
+.left-rail button:hover{background:#eef3f8;}
+.pin-btn{position:absolute;top:10px;right:10px;cursor:pointer;font-size:16px;}
+/* Right Drawer */
 .right-drawer{
-  width:420px;background:#f9fafb;border-left:1px solid #ddd;
-  padding:16px;overflow-y:auto;
+  width:420px;background:#f9fafb;border-left:1px solid #ddd;padding:16px;overflow-y:auto;
+  position:fixed;top:0;right:0;height:100%;transform:translateX(405px);transition:transform .35s ease;
+  z-index:9999;box-shadow:-2px 0 6px rgba(0,0,0,0.1);
 }
-.sub-tabs button{
-  padding:6px 8px;border:1px solid #ccc;border-radius:3px;
-  background:#fff;font-size:12px;cursor:pointer;margin-right:4px;
-}
-.sub-tabs button.active{background:#28a745;color:#fff;border-color:#28a745;}
-.content-block{display:none;}
-.content-block.active{display:block;}
+.right-drawer:hover{transform:translateX(0);}
+.right-drawer.docked{transform:translateX(0)!important;}
+.right-drawer::before{content:'';position:absolute;top:0;left:-15px;width:15px;height:100%;background:transparent;}
+/* Main Area */
+.main{flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden;position:relative;z-index:1;margin-left:15px;margin-right:15px;}
+.main-header{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #ddd;background:#fff;}
+.search{flex:1;color:#777;font-size:14px;}
+.hamburger{display:none;font-size:20px;cursor:pointer;}
+@media(max-width:768px){.hamburger{display:inline-block;}}
+.tabset{display:flex;flex-direction:column;height:100%;overflow:hidden;}
+.tabset input[name="main-tab"]{display:none;}
+.tab-bar{display:flex;flex-wrap:wrap;border-bottom:1px solid #ddd;background:#f9f9f9;}
+.tab-bar label{flex:1;text-align:center;padding:10px 12px;font-size:13px;cursor:pointer;border:1px solid #ddd;border-bottom:none;background:#f8f8f8;border-radius:4px 4px 0 0;transition:background .2s;}
+.tab-bar label:hover{background:#eef3f8;}
+#tab1:checked~.tab-bar label[for="tab1"],
+#tab2:checked~.tab-bar label[for="tab2"],
+#tab3:checked~.tab-bar label[for="tab3"],
+#tab4:checked~.tab-bar label[for="tab4"],
+#tab5:checked~.tab-bar label[for="tab5"],
+#tab6:checked~.tab-bar label[for="tab6"]{background:#007bff;color:#fff;border-color:#007bff;}
+.tab-content{flex:1;position:relative;overflow:hidden;}
+.section{display:block;padding:16px;overflow-y:auto;position:absolute;top:0;left:0;right:0;bottom:0;opacity:0;visibility:hidden;pointer-events:none;}
+#tab1:checked~.tab-content #content1,
+#tab2:checked~.tab-content #content2,
+#tab3:checked~.tab-content #content3,
+#tab4:checked~.tab-content #content4,
+#tab5:checked~.tab-content #content5,
+#tab6:checked~.tab-content #content6{position:relative;opacity:1;visibility:visible;pointer-events:auto;}
+.section [elname='zc-component'],.section iframe{width:100%!important;height:calc(100vh - 220px);border:none;display:block;}
+/* Drawer Content */
+.right-drawer h2{margin-top:0;font-size:16px;font-weight:600;}
+.meta{font-size:13px;margin-bottom:10px;}
+input[name="drawer-tab"]{display:none;}
+.sub-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;}
+.sub-tabs label{padding:6px 8px;border:1px solid #ccc;border-radius:3px;font-size:12px;background:#fff;cursor:pointer;}
+input[name="drawer-tab"]:checked+label{background:#28a745;color:#fff;border-color:#28a745;}
+.content-block{display:none;font-size:13px;color:#333;margin-bottom:10px;}
+#d1:checked~#drawer-overview,#d2:checked~#drawer-timeline,#d3:checked~#drawer-related,#d4:checked~#drawer-files,#d5:checked~#drawer-automation{display:block;}
 </style>
 </head>
-
 <body>
 <div class="crm-container">
-
-  <!-- LEFT NAV -->
-  <aside class="left-rail">
+  <aside class="left-rail" id="leftRail">
+    <span class="pin-btn" id="leftPin">📌</span>
     <h2>Navigation</h2>
-    <div>My Day</div><div>Inbox</div><div>Leads</div>
-    <div>Accounts</div><div>Contacts</div><div>Deals</div>
-    <div>Calendar</div><div>Reports</div>
-
-    <h3>Filters</h3>
+    <div>My Day</div><div>Inbox</div><div>Leads</div><div>Accounts</div><div>Contacts</div><div>Deals</div><div>Calendar</div><div>Reports</div>
+    <div class="section-title">Filters</div>
     <button>My Records</button><button>Team</button><button>All</button>
-
-    <h3>Quick Create</h3>
-    <button>+ Lead</button><button>+ Deal</button>
-    <button>+ Task</button><button>+ Note</button>
+    <div class="section-title">Quick Create</div>
+    <button>+ Lead</button><button>+ Deal</button><button>+ Task</button><button>+ Note</button>
   </aside>
-
-  <!-- MAIN -->
   <main class="main">
     <div class="main-header">
-      <div>🔍 Global Search</div>
-      <div>
-        <button>Convert</button>
-        <button>Log Activity</button>
-        <button>Email</button>
-        <button>Schedule</button>
+      <div class="hamburger" id="mobileToggle">☰</div>
+      <div class="search">🔍 Global Search…</div>
+    </div>
+    <div class="tabset">
+      <input type="radio" id="tab1" name="main-tab" checked>
+      <input type="radio" id="tab2" name="main-tab">
+      <input type="radio" id="tab3" name="main-tab">
+      <input type="radio" id="tab4" name="main-tab">
+      <input type="radio" id="tab5" name="main-tab">
+      <input type="radio" id="tab6" name="main-tab">
+      <div class="tab-bar">
+        <label for="tab1">My Day</label><label for="tab2">Pipeline</label><label for="tab3">Leads</label><label for="tab4">Accounts</label><label for="tab5">Contacts</label><label for="tab6">Calendar</label>
+      </div>
+      <div class="tab-content">
+        <div id="content1" class="section"><h3>My Day</h3><div elName="zc-component" viewLinkName="Today_s_Tasks" params="zc_Header=true">Loading...</div></div>
+        <div id="content2" class="section"><h3>Pipeline</h3><div elName="zc-component" viewLinkName="Kanban_Deal_Report" params="zc_Header=true">Loading...</div></div>
+        <div id="content3" class="section"><h3>Leads</h3><div elName="zc-component" viewLinkName="Lead_List_by_Owner" params="zc_Header=true">Loading...</div></div>
+        <div id="content4" class="section"><h3>Accounts</h3><div elName="zc-component" viewLinkName="My_Accounts" params="zc_Header=true">Loading...</div></div>
+        <div id="content5" class="section"><h3>Contacts</h3><div elName="zc-component" viewLinkName="My_Contacts" params="zc_Header=true">Loading...</div></div>
+        <div id="content6" class="section"><h3>Calendar</h3><div elName="zc-component" viewLinkName="Subject_Meeting_Title" params="zc_Header=true">Loading...</div></div>
       </div>
     </div>
-
-    <div class="tabs" id="mainTabs">
-      <button data-target="day" class="active">My Day</button>
-      <button data-target="pipeline">Pipeline</button>
-      <button data-target="leads">Leads</button>
-      <button data-target="accounts">Accounts</button>
-      <button data-target="contacts">Contacts</button>
-      <button data-target="calendar">Calendar</button>
-    </div>
-
-    <div class="section active" id="section-day">
-      <h3>My Day — Tasks due today</h3>
-      <div elName="zc-component" viewLinkName="Today_s_Tasks" params="zc_Header=true">Loading View...</div>
-    </div>
-
-    <div class="section" id="section-pipeline">
-      <h3>Pipeline (Kanban)</h3>
-      <div elName="zc-component" viewLinkName="Kanban_Deal_Report" params="zc_Header=true">Loading View...</div>
-    </div>
-
-    <div class="section" id="section-leads">
-      <h3>Leads List</h3>
-      <div elName="zc-component" viewLinkName="Lead_List_by_Owner" params="zc_Header=true">Loading View...</div>
-    </div>
-
-    <div class="section" id="section-accounts">
-      <h3>Accounts</h3>
-      <div elName="zc-component" viewLinkName="My_Accounts" params="zc_Header=true">Loading View...</div>
-    </div>
-
-    <div class="section" id="section-contacts">
-      <h3>Contacts</h3>
-      <div elName="zc-component" viewLinkName="My_Contacts" params="zc_Header=true">Loading View...</div>
-    </div>
-
-    <div class="section" id="section-calendar">
-      <h3>Calendar</h3>
-      <div elName="zc-component" viewLinkName="Subject_Meeting_Title" params="zc_Header=true">Loading View...</div>
-    </div>
   </main>
-
-  <!-- RIGHT PANEL -->
   <aside class="right-drawer" id="rightDrawer">
+    <span class="pin-btn" id="rightPin">📌</span>
     <h2>Universal Record View</h2>
-    <div class="meta">Record: [Name]<br>Owner: [User]</div>
-    <div class="sub-tabs" id="drawerTabs">
-      <button data-target="overview" class="active">Overview</button>
-      <button data-target="timeline">Timeline</button>
-      <button data-target="related">Related</button>
-      <button data-target="files">Files</button>
-      <button data-target="automation">Automation</button>
+    <div class="meta">Record: [Name]<br>Owner: [User] | Score: [##]</div>
+    <div class="sub-tabs">
+      <input type="radio" id="d1" name="drawer-tab" checked><label for="d1">Overview</label>
+      <input type="radio" id="d2" name="drawer-tab"><label for="d2">Timeline</label>
+      <input type="radio" id="d3" name="drawer-tab"><label for="d3">Related</label>
+      <input type="radio" id="d4" name="drawer-tab"><label for="d4">Files</label>
+      <input type="radio" id="d5" name="drawer-tab"><label for="d5">Automation</label>
     </div>
-    <div id="drawer-overview" class="content-block active"><b>Overview:</b> Key fields summary…</div>
-    <div id="drawer-timeline" class="content-block"><b>Timeline:</b> Calls, notes, meetings…</div>
-    <div id="drawer-related" class="content-block"><b>Related:</b> Deals, Contacts…</div>
-    <div id="drawer-files" class="content-block"><b>Files:</b> Attachments area</div>
-    <div id="drawer-automation" class="content-block"><b>Automation:</b> Playbooks & SLAs</div>
+    <div id="drawer-overview" class="content-block"><strong>Overview</strong>: Key fields summary…</div>
+    <div id="drawer-timeline" class="content-block"><strong>Timeline</strong>: Activities…</div>
+    <div id="drawer-related" class="content-block"><strong>Related</strong>: Deals, Contacts…</div>
+    <div id="drawer-files" class="content-block"><strong>Files</strong>: Attachments area</div>
+    <div id="drawer-automation" class="content-block"><strong>Automation</strong>: Playbooks</div>
   </aside>
 </div>
-
 <script>
-// Tab switching
-const mainTabs = document.querySelectorAll('#mainTabs button');
-const sections = document.querySelectorAll('.section');
-mainTabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    mainTabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    sections.forEach(sec => sec.classList.remove('active'));
-    document.getElementById('section-' + tab.dataset.target).classList.add('active');
-  });
-});
-const drawerTabs = document.querySelectorAll('#drawerTabs button');
-const drawerBlocks = document.querySelectorAll('.right-drawer .content-block');
-drawerTabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    drawerTabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    drawerBlocks.forEach(b => b.classList.remove('active'));
-    document.getElementById('drawer-' + tab.dataset.target).classList.add('active');
-  });
-});
+const leftRail=document.getElementById('leftRail');
+const rightDrawer=document.getElementById('rightDrawer');
+const leftPin=document.getElementById('leftPin');
+const rightPin=document.getElementById('rightPin');
+const mobileToggle=document.getElementById('mobileToggle');
+if(localStorage.getItem('dockLeft')==='true')leftRail.classList.add('docked');
+if(localStorage.getItem('dockRight')==='true')rightDrawer.classList.add('docked');
+leftPin.onclick=()=>{
+ leftRail.classList.toggle('docked');
+ localStorage.setItem('dockLeft',leftRail.classList.contains('docked'));
+};
+rightPin.onclick=()=>{
+ rightDrawer.classList.toggle('docked');
+ localStorage.setItem('dockRight',rightDrawer.classList.contains('docked'));
+};
+mobileToggle.onclick=()=>{
+ leftRail.classList.toggle('docked');
+};
 </script>
 </body>
 </html>
